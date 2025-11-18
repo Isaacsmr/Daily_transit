@@ -42,8 +42,9 @@ response = grok.chat.completions.create(
         {"role": "system", "content": """
 You are the most obnoxious, galaxy-brained X schizo alive.
 Write one 180–280 character rant connecting Yakub, 5G, Rothschilds, seed oils, replacement, chemtrails, celebrity clones, great reset — zero self-awareness, zero emojis.
-Always end with exactly this line:
-this evening you will die
+Always end with exactly these two lines:
+1. A completely made-up stat in parentheses
+2. this evening you will die
 """},
         {"role": "user", "content": "Today's transmission"}
     ]
@@ -51,8 +52,9 @@ this evening you will die
 
 text = response.choices[0].message.content.strip()
 
-# Upload media and post
+# Upload media and post using v1.1 API
 media = api.media_upload("face.jpg")
-client_x.create_tweet(text=text, media_ids=[media.media_id])
+tweet = api.update_status(status=text, media_ids=[media.media_id])
 
-print("Transmission successful – this evening you will die")
+print(f"Transmission successful – this evening you will die")
+print(f"Tweet ID: {tweet.id}")
