@@ -3,7 +3,7 @@ import requests
 import io
 import os
 from PIL import Image
-from openai import OpenAI  # Correct import
+from openai import OpenAI
 
 # X authentication
 client_x = tweepy.Client(
@@ -14,12 +14,14 @@ client_x = tweepy.Client(
 )
 
 auth = tweepy.OAuth1UserHandler(
-    os.getenv('CONSUMER_KEY'), os.getenv('CONSUMER_SECRET'),
-    os.getenv('ACCESS_TOKEN'), os.getenv('ACCESS_TOKEN_SECRET')
+    os.getenv('CONSUMER_KEY'),
+    os.getenv('CONSUMER_SECRET'),
+    os.getenv('ACCESS_TOKEN'),
+    os.getenv('ACCESS_TOKEN_SECRET')
 )
 api = tweepy.API(auth)
 
-# xAI Grok API – GUARANTEED WORKING NOV 17 2025
+# xAI Grok API - Correct configuration for Nov 17, 2025
 grok = OpenAI(
     api_key=os.getenv('GROK_API_KEY'),
     base_url="https://api.x.ai/v1"
@@ -31,19 +33,20 @@ r = requests.get("https://thispersondoesnotexist.com", headers=headers)
 img = Image.open(io.BytesIO(r.content))
 img.save("face.jpg")
 
-# Generate rant with the actual public beta model
-response = grok.chat.completions.create(   # ← THIS LINE USES grok, NOT openai
-    model="grok-beta",                     # ← this model is 100% available in public beta
+# Generate rant with the actual Grok 4 model
+response = grok.chat.completions.create(
+    model="grok-4-0709",  # ← CORRECT model name for Grok 4
     temperature=1.2,
     max_tokens=350,
     messages=[
         {"role": "system", "content": """
 You are the most obnoxious, galaxy-brained X schizo alive.
 Write one 180–280 character rant connecting Yakub, 5G, Rothschilds, seed oils, replacement, chemtrails, celebrity clones, great reset — zero self-awareness, zero emojis.
-Always end with exactly this line:
-this evening you will die
+Always end with exactly these two lines:
+1. A completely made-up stat in parentheses
+2. this evening you will die
 """},
-        {"role": "user", "content": "Today’s transmission"}
+        {"role": "user", "content": "Today's transmission"}
     ]
 )
 
