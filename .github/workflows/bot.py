@@ -5,14 +5,7 @@ import os
 from PIL import Image
 from openai import OpenAI
 
-# X authentication
-client_x = tweepy.Client(
-    consumer_key=os.getenv('CONSUMER_KEY'),
-    consumer_secret=os.getenv('CONSUMER_SECRET'),
-    access_token=os.getenv('ACCESS_TOKEN'),
-    access_token_secret=os.getenv('ACCESS_TOKEN_SECRET')
-)
-
+# X authentication - v1.1 API
 auth = tweepy.OAuth1UserHandler(
     os.getenv('CONSUMER_KEY'),
     os.getenv('CONSUMER_SECRET'),
@@ -52,9 +45,9 @@ Always end with exactly these two lines:
 
 text = response.choices[0].message.content.strip()
 
-# Upload media and post using v1.1 API
+# Upload media and post using v1.1 API (works better with standard access)
 media = api.media_upload("face.jpg")
 tweet = api.update_status(status=text, media_ids=[media.media_id])
 
 print(f"Transmission successful – this evening you will die")
-print(f"Tweet ID: {tweet.id}")
+print(f"Tweet posted! ID: {tweet.id}")
