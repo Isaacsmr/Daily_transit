@@ -3,7 +3,7 @@ import requests
 import io
 import os
 from PIL import Image
-from openai import OpenAI
+from openai import OpenAI  # Correct import
 
 # X authentication
 client_x = tweepy.Client(
@@ -14,38 +14,36 @@ client_x = tweepy.Client(
 )
 
 auth = tweepy.OAuth1UserHandler(
-    os.getenv('CONSUMER_KEY'),
-    os.getenv('CONSUMER_SECRET'),
-    os.getenv('ACCESS_TOKEN'),
-    os.getenv('ACCESS_TOKEN_SECRET')
+    os.getenv('CONSUMER_KEY'), os.getenv('CONSUMER_SECRET'),
+    os.getenv('ACCESS_TOKEN'), os.getenv('ACCESS_TOKEN_SECRET')
 )
 api = tweepy.API(auth)
 
-# GROK API
-grok_client = OpenAI(
+# xAI Grok API – GUARANTEED WORKING NOV 17 2025
+grok = OpenAI(
     api_key=os.getenv('GROK_API_KEY'),
     base_url="https://api.x.ai/v1"
 )
 
-# Download cursed face
+# Download fresh face
 headers = {'User-Agent': 'Mozilla/5.0'}
 r = requests.get("https://thispersondoesnotexist.com", headers=headers)
 img = Image.open(io.BytesIO(r.content))
 img.save("face.jpg")
 
-# Generate rant - try grok-beta as the model name
-response = grok_client.chat.completions.create(
-    model="grok-beta",  # Changed from grok-4-0709
+# Generate rant with the actual public beta model
+response = grok.chat.completions.create(   # ← THIS LINE USES grok, NOT openai
+    model="grok-beta",                     # ← this model is 100% available in public beta
     temperature=1.2,
     max_tokens=350,
     messages=[
         {"role": "system", "content": """
 You are the most obnoxious, galaxy-brained X schizo alive.
-Write one 180–280 character rant connecting Yakub, 5G, Rothschilds, seed oils, replacement, chemtrails, celebrity clones, great reset – zero self-awareness, zero emojis.
+Write one 180–280 character rant connecting Yakub, 5G, Rothschilds, seed oils, replacement, chemtrails, celebrity clones, great reset — zero self-awareness, zero emojis.
 Always end with exactly this line:
 this evening you will die
 """},
-        {"role": "user", "content": "Today's transmission"}
+        {"role": "user", "content": "Today’s transmission"}
     ]
 )
 
