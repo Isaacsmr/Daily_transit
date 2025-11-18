@@ -1,0 +1,23 @@
+name: Daily Schizo Post
+
+on:
+  schedule:
+    - cron: '0 8,19 * * *'   # Runs twice a day at roughly 8am and 7pm UTC
+  workflow_dispatch:
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install tweepy requests pillow openai
+      - run: python bot.py
+        env:
+          CONSUMER_KEY: ${{ secrets.CONSUMER_KEY }}
+          CONSUMER_SECRET: ${{ secrets.CONSUMER_SECRET }}
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
+          GROK_API_KEY: ${{ secrets.GROK_API_KEY }}
