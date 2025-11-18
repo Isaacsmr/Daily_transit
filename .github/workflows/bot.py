@@ -3,7 +3,7 @@ from PIL import Image
 import openai
 
 # X authentication
-client = tweepy.Client(
+client_x = tweepy.Client(
     consumer_key=os.getenv('CONSUMER_KEY'),
     consumer_secret=os.getenv('CONSUMER_SECRET'),
     access_token=os.getenv('ACCESS_TOKEN'),
@@ -16,19 +16,21 @@ auth = tweepy.OAuth1UserHandler(
 )
 api = tweepy.API(auth)
 
-# Grok API
-openai.api_key = os.getenv('GROK_API_KEY')
-openai.base_url = "https://api.x.ai/v1"
+# GROK API – WORKING NOV 17 2025
+grok = openai.OpenAI(
+    api_key=os.getenv('GROK_API_KEY'),
+    base_url="https://api.x.ai/v1"
+)
 
-# 1. Download fresh face
+# Download fresh cursed face
 headers = {'User-Agent': 'Mozilla/5.0'}
 r = requests.get("https://thispersondoesnotexist.com", headers=headers)
 img = Image.open(io.BytesIO(r.content))
 img.save("face.jpg")
 
-# 2. Generate today’s unhinged rant
-response = openai.chat.completions.create(
-    model="grok-beta",
+# Generate rant with Grok-4
+response = grok.chat.completions.create(
+    model="grok-4",               # ← this is the real current latest model
     temperature=1.2,
     max_tokens=300,
     messages=[{
@@ -36,9 +38,8 @@ response = openai.chat.completions.create(
         "content": """
 You are the most obnoxious, galaxy-brained X schizo alive.
 Write one 180–280 character rant connecting Yakub, 5G, Rothschilds, seed oils, replacement, chemtrails, celebrity clones, great reset — zero self-awareness, zero emojis.
-Always end with exactly these two lines:
-1. A completely made-up stat in parentheses
-2. this evening you will die
+Always end with exactly this line:
+this evening you will die
 """
     }, {
         "role": "user",
@@ -48,8 +49,8 @@ Always end with exactly these two lines:
 
 text = response.choices[0].message.content.strip()
 
-# 3. Post it
+# Post it
 media = api.media_upload("face.jpg")
-client.create_tweet(text=text, media_ids=[media.media_id])
+client_x.create_tweet(text=text, media_ids=[media.media_id])
 
 print("Transmission successful – this evening you will die")
