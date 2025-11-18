@@ -21,7 +21,7 @@ auth = tweepy.OAuth1UserHandler(
 )
 api = tweepy.API(auth)
 
-# xAI Grok API - CORRECT SETUP FOR NOV 17 2025
+# xAI Grok API
 grok = OpenAI(
     api_key=os.getenv('GROK_API_KEY'),
     base_url="https://api.x.ai/v1"
@@ -33,7 +33,7 @@ r = requests.get("https://thispersondoesnotexist.com", headers=headers)
 img = Image.open(io.BytesIO(r.content))
 img.save("face.jpg")
 
-# Generate rant with Grok 4 - CRITICAL: Must use 'grok' not 'openai'
+# Generate rant with Grok 4
 response = grok.chat.completions.create(
     model="grok-4-0709",
     temperature=1.2,
@@ -51,7 +51,7 @@ this evening you will die
 
 text = response.choices[0].message.content.strip()
 
-# Post to X
+# Upload media and post
 media = api.media_upload("face.jpg")
 client_x.create_tweet(text=text, media_ids=[media.media_id])
 
